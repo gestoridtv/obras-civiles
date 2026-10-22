@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><title>Test: speech.js</title></head>
+<body>
+  <p>Disponible: <span id="disponible"></span></p>
+  <button id="btnMic">🎤 Hablar</button>
+  <p>Resultado: <span id="resultado"></span></p>
+  <script src="../js/speech.js"></script>
+  <script>
+    document.getElementById('disponible').textContent = Speech.disponible();
+    document.getElementById('btnMic').addEventListener('click', () => {
+      Speech.iniciar({
+        onResultado: (texto) => { document.getElementById('resultado').textContent = texto; },
+        onError: (err) => { document.getElementById('resultado').textContent = 'ERROR: ' + err.message; },
+      });
+    });
+  </script>
+</body>
+</html>
