@@ -473,14 +473,14 @@ git commit -m "feat: scaffold HTML shell y estilos base"
     }
 
     async function correr() {
-      await new Promise((resolve) => {
-        const req = indexedDB.deleteDatabase('obras-civiles-db');
-        req.onsuccess = resolve;
-        req.onerror = resolve;
-        req.onblocked = resolve;
-      });
-
+      // No borra la base completa: esta página se publica junto con la app
+      // en GitHub Pages, así que un reset total acá borraría datos reales
+      // de obras si alguien la abre por error en producción. En cambio,
+      // cada aserción trabaja sobre un proyecto propio y lo borra al final,
+      // sin tocar nada preexistente.
       await DB.init();
+
+      const proyectosAntes = (await DB.listarProyectos()).length;
 
       const proyecto = await DB.crearProyecto({ nombre: 'Casa Pérez', cliente: 'Juan Pérez' });
       assert(!!proyecto.id, 'crearProyecto genera un id');
@@ -488,7 +488,7 @@ git commit -m "feat: scaffold HTML shell y estilos base"
       assert(proyecto.categorias.length === 6, 'proyecto nuevo trae 6 categorías sugeridas');
 
       const listados = await DB.listarProyectos();
-      assert(listados.length === 1, 'listarProyectos devuelve el proyecto creado');
+      assert(listados.length === proyectosAntes + 1, 'listarProyectos devuelve el proyecto creado');
 
       const actualizado = await DB.actualizarProyecto(proyecto.id, { estado: 'brief_generado' });
       assert(actualizado.estado === 'brief_generado', 'actualizarProyecto cambia el estado');
@@ -510,7 +510,7 @@ git commit -m "feat: scaffold HTML shell y estilos base"
 
       await DB.eliminarProyecto(proyecto.id);
       const proyectosTrasBorrar = await DB.listarProyectos();
-      assert(proyectosTrasBorrar.length === 0, 'eliminarProyecto borra el proyecto');
+      assert(proyectosTrasBorrar.length === proyectosAntes, 'eliminarProyecto borra el proyecto');
       const reqsHuerfanos = await DB.listarRequerimientos(proyecto.id);
       assert(reqsHuerfanos.length === 0, 'eliminarProyecto borra en cascada sus requerimientos');
 
