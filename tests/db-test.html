@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Test: db.js</title>
+</head>
+<body>
+  <h1>Resultados</h1>
+  <ul id="resultados"></ul>
+  <script src="../js/db.js"></script>
+  <script>
+    const ul = document.getElementById('resultados');
+    let pasados = 0;
+    let fallados = 0;
+
+    function assert(condicion, mensaje) {
+      const li = document.createElement('li');
+      if (condicion) {
+        li.textContent = '✅ ' + mensaje;
+        pasados++;
+      } else {
+        li.textContent = '❌ ' + mensaje;
+        li.style.color = 'red';
+        fallados++;
+      }
+      ul.appendChild(li);
+    }
+
+    async function correr() {
+      // No borra la base completa: esta página se publica junto con la app
+      // en GitHub Pages, así que un reset total acá borraría datos reales
+      // de obras si alguien la abre por error en producción. En cambio,
+      // cada aserción trabaja sobre un proyecto propio y lo borra al final,
+      // sin tocar nada preexistente.
+      await DB.init();
+
+      const proyectosAntes = (await DB.listarProyectos()).length;
+
+      const proyecto = await DB.crearProyecto({ nombre: 'Casa Pérez', cliente: 'Juan Pérez' });
+      assert(!!proyecto.id, 'crearProyecto genera un id');
+      assert(proyecto.estado === 'captura', 'proyecto nuevo arranca en estado captura');
+      assert(proyecto.categorias.length === 6, 'proyecto nuevo trae 6 categorías sugeridas');
+
+      const listados = await DB.listarProyectos();
+      assert(listados.length === proyectosAntes + 1, 'listarProyectos devuelve el proyecto creado');
+
+      const actualizado = await DB.actualizarProyecto(proyecto.id, { estado: 'brief_generado' });
+      assert(actualizado.estado === 'brief_generado', 'actualizarProyecto cambia el estado');
+
+      const req1 = await DB.crearRequerimiento(proyecto.id, 'Pileta de 6x3');
+      const req2 = await DB.crearRequerimiento(proyecto.id, 'Dos baños en planta alta');
+      assert(req1.categoria === null, 'requerimiento nuevo no tiene categoría');
+      assert(req1.orden === 0 && req2.orden === 1, 'requerimientos se ordenan por orden de creación');
+
+      const reqs = await DB.listarRequerimientos(proyecto.id);
+      assert(reqs.length === 2, 'listarRequerimientos devuelve los dos requerimientos creados');
+
+      const reqActualizado = await DB.actualizarRequerimiento(req1.id, { categoria: 'Estructura' });
+      assert(reqActualizado.categoria === 'Estructura', 'actualizarRequerimiento asigna categoría');
+
+      await DB.eliminarRequerimiento(req2.id);
+      const reqsTrasBorrar = await DB.listarRequerimientos(proyecto.id);
+      assert(reqsTrasBorrar.length === 1, 'eliminarRequerimiento borra el requerimiento');
+
+      await DB.eliminarProyecto(proyecto.id);
+      const proyectosTrasBorrar = await DB.listarProyectos();
+      assert(proyectosTrasBorrar.length === proyectosAntes, 'eliminarProyecto borra el proyecto');
+      const reqsHuerfanos = await DB.listarRequerimientos(proyecto.id);
+      assert(reqsHuerfanos.length === 0, 'eliminarProyecto borra en cascada sus requerimientos');
+
+      const resumen = document.createElement('h2');
+      resumen.textContent = `${pasados} pasaron, ${fallados} fallaron`;
+      resumen.style.color = fallados === 0 ? 'green' : 'red';
+      document.body.appendChild(resumen);
+    }
+
+    correr().catch((err) => {
+      const li = document.createElement('li');
+      li.textContent = '❌ Error inesperado: ' + err.message;
+      li.style.color = 'red';
+      ul.appendChild(li);
+    });
+  </script>
+</body>
+</html>
