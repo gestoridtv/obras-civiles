@@ -71,7 +71,7 @@ window.Views.brief = {
 
 function compartirOBajarPdf(proyecto, requerimientos) {
   if (!window.jspdf) {
-    alert('No se pudo generar el PDF. Si estás sin conexión, probá de nuevo cuando tengas internet.');
+    alert('No se pudo generar el PDF. Si estás sin conexión, prueba de nuevo cuando tengas internet.');
     return;
   }
   const blob = PDF.generarBrief(proyecto, requerimientos);

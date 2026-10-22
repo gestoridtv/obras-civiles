@@ -28,7 +28,7 @@ window.Views.captura = {
       const barra = document.createElement('div');
       barra.className = 'barra-captura';
       barra.innerHTML = `
-        <input type="text" id="input-captura" placeholder="Escribí o dictá un requerimiento…">
+        <input type="text" id="input-captura" placeholder="Escribe o dicta un requerimiento…">
         <button class="btn-mic" id="btn-mic">🎤</button>
       `;
       container.appendChild(barra);
@@ -59,7 +59,7 @@ window.Views.captura = {
       const btnMic = document.getElementById('btn-mic');
       btnMic.addEventListener('click', () => {
         if (!Speech.disponible()) {
-          alert('El dictado por voz no está disponible en este navegador. Usá el campo de texto.');
+          alert('El dictado por voz no está disponible en este navegador. Usa el campo de texto.');
           return;
         }
         btnMic.classList.add('btn-mic--grabando');
@@ -72,7 +72,7 @@ window.Views.captura = {
           onError: (err) => {
             btnMic.classList.remove('btn-mic--grabando');
             if (err.code === 'not-allowed' || err.code === 'service-not-allowed') {
-              alert('No se pudo acceder al micrófono. Revisá los permisos del navegador.');
+              alert('No se pudo acceder al micrófono. Revisa los permisos del navegador.');
             } else {
               console.warn(err.message);
             }

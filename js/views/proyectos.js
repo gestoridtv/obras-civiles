@@ -31,7 +31,7 @@ window.Views.proyectos = {
     DB.listarProyectos().then((proyectos) => {
       lista.innerHTML = '';
       if (proyectos.length === 0) {
-        lista.innerHTML = '<p style="padding:16px;color:var(--color-texto-sutil);">Todavía no creaste ninguna obra. Tocá + para empezar.</p>';
+        lista.innerHTML = '<p style="padding:16px;color:var(--color-texto-sutil);">Todavía no creaste ninguna obra. Toca + para empezar.</p>';
         return;
       }
       proyectos.forEach((proyecto) => lista.appendChild(crearTarjetaProyecto(proyecto)));
