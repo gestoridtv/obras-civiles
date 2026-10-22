@@ -1,0 +1,41 @@
+const CACHE_NAME = 'obras-civiles-shell-v1';
+const ARCHIVOS_SHELL = [
+  './',
+  './index.html',
+  './css/styles.css',
+  './manifest.json',
+  './js/db.js',
+  './js/speech.js',
+  './js/pdf.js',
+  './js/router.js',
+  './js/views/proyectos.js',
+  './js/views/captura.js',
+  './js/views/revision.js',
+  './js/views/brief.js',
+  './js/views/checklist.js',
+  './js/app.js',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ARCHIVOS_SHELL))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((claves) =>
+      Promise.all(claves.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((respuestaCache) => respuestaCache || fetch(event.request))
+  );
+});

@@ -1,4 +1,12 @@
 (function () {
+  function registrarServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') return;
+    navigator.serviceWorker.register('sw.js').catch((err) => {
+      console.warn('No se pudo registrar el service worker:', err);
+    });
+  }
+
   function registrarVistas() {
     Router.registrar('proyectos', Views.proyectos.render);
     Router.registrar('captura', Views.captura.render);
@@ -11,6 +19,7 @@
     DB.init()
       .then(() => {
         registrarVistas();
+        registrarServiceWorker();
         Router.renderActual();
       })
       .catch((err) => {
