@@ -9,7 +9,9 @@
 
   function iniciar({ onResultado, onError, idioma }) {
     if (!disponible()) {
-      onError(new Error('SpeechRecognition no soportado en este navegador'));
+      const err = new Error('SpeechRecognition no soportado en este navegador');
+      err.code = 'not-supported';
+      onError(err);
       return;
     }
     const recognition = new SpeechRecognitionImpl();
@@ -23,7 +25,9 @@
       onResultado(texto);
     };
     recognition.onerror = (event) => {
-      onError(new Error('Error de reconocimiento de voz: ' + event.error));
+      const err = new Error('Error de reconocimiento de voz: ' + event.error);
+      err.code = event.error;
+      onError(err);
     };
     recognition.onend = () => {
       reconocimientoActivo = null;

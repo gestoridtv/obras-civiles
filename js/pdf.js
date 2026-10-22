@@ -22,7 +22,7 @@
 
     const porCategoria = {};
     requerimientos.forEach((r) => {
-      const cat = r.categoria || 'Sin categoría';
+      const cat = (r.categoria && proyecto.categorias.includes(r.categoria)) ? r.categoria : 'Sin categoría';
       if (!porCategoria[cat]) porCategoria[cat] = [];
       porCategoria[cat].push(r);
     });

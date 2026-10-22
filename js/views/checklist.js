@@ -3,10 +3,26 @@ window.Views = window.Views || {};
 window.Views.checklist = {
   render(container, { proyectoId }) {
     Promise.all([DB.obtenerProyecto(proyectoId), DB.listarRequerimientos(proyectoId)]).then(([proyecto, requerimientos]) => {
+      if (!proyecto) {
+        container.innerHTML = '<p style="padding:16px;">Obra no encontrada.</p>';
+        return;
+      }
+
       const header = document.createElement('div');
       header.className = 'header';
-      header.innerHTML = `<h1>Checklist: ${proyecto.nombre}</h1>`;
+      header.innerHTML = `
+        <button class="btn btn--texto" id="btn-mis-obras">← Mis obras</button>
+        <h1>Checklist: ${proyecto.nombre}</h1>
+        <button class="btn btn--texto" id="btn-volver-revision">Volver a revisión</button>
+      `;
       container.appendChild(header);
+
+      document.getElementById('btn-mis-obras').addEventListener('click', () => {
+        Router.navegar('proyectos');
+      });
+      document.getElementById('btn-volver-revision').addEventListener('click', () => {
+        Router.navegar('revision', { proyectoId });
+      });
 
       const progreso = document.createElement('div');
       progreso.className = 'progreso';
@@ -19,11 +35,11 @@ window.Views.checklist = {
 
       const porCategoria = {};
       requerimientos.forEach((r) => {
-        const cat = r.categoria || 'Sin categoría';
+        const cat = (r.categoria && proyecto.categorias.includes(r.categoria)) ? r.categoria : 'Sin categoría';
         (porCategoria[cat] = porCategoria[cat] || []).push(r);
       });
 
-      proyecto.categorias.forEach((categoria) => {
+      proyecto.categorias.concat(['Sin categoría']).forEach((categoria) => {
         const items = porCategoria[categoria];
         if (!items || items.length === 0) return;
         const titulo = document.createElement('div');

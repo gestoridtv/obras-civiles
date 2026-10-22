@@ -11,10 +11,15 @@ window.Views.captura = {
       const header = document.createElement('div');
       header.className = 'header';
       header.innerHTML = `
+        <button class="btn btn--texto" id="btn-mis-obras">← Mis obras</button>
         <h1>${proyecto.nombre}</h1>
         <button class="btn btn--texto" id="btn-ir-revision">Revisar y categorizar →</button>
       `;
       container.appendChild(header);
+
+      document.getElementById('btn-mis-obras').addEventListener('click', () => {
+        Router.navegar('proyectos');
+      });
 
       const lista = document.createElement('ul');
       lista.className = 'lista-items';
@@ -66,7 +71,11 @@ window.Views.captura = {
           },
           onError: (err) => {
             btnMic.classList.remove('btn-mic--grabando');
-            console.warn(err.message);
+            if (err.code === 'not-allowed' || err.code === 'service-not-allowed') {
+              alert('No se pudo acceder al micrófono. Revisá los permisos del navegador.');
+            } else {
+              console.warn(err.message);
+            }
           },
         });
       });

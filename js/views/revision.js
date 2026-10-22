@@ -3,10 +3,22 @@ window.Views = window.Views || {};
 window.Views.revision = {
   render(container, { proyectoId }) {
     DB.obtenerProyecto(proyectoId).then((proyecto) => {
+      if (!proyecto) {
+        container.innerHTML = '<p style="padding:16px;">Obra no encontrada.</p>';
+        return;
+      }
+
       const header = document.createElement('div');
       header.className = 'header';
-      header.innerHTML = `<h1>Revisar: ${proyecto.nombre}</h1>`;
+      header.innerHTML = `
+        <button class="btn btn--texto" id="btn-mis-obras">← Mis obras</button>
+        <h1>Revisar: ${proyecto.nombre}</h1>
+      `;
       container.appendChild(header);
+
+      document.getElementById('btn-mis-obras').addEventListener('click', () => {
+        Router.navegar('proyectos');
+      });
 
       const lista = document.createElement('div');
       container.appendChild(lista);
@@ -68,9 +80,21 @@ function crearFilaRevision(req, proyecto, alCambiar) {
   fila.style.alignItems = 'center';
 
   const select = document.createElement('select');
-  select.innerHTML = '<option value="">Sin categoría</option>' +
-    proyecto.categorias.map((c) => `<option value="${c}" ${c === req.categoria ? 'selected' : ''}>${c}</option>`).join('') +
-    '<option value="__nueva__">+ Nueva categoría…</option>';
+  const optSinCategoria = document.createElement('option');
+  optSinCategoria.value = '';
+  optSinCategoria.textContent = 'Sin categoría';
+  select.appendChild(optSinCategoria);
+  proyecto.categorias.forEach((c) => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    opt.selected = c === req.categoria;
+    select.appendChild(opt);
+  });
+  const optNueva = document.createElement('option');
+  optNueva.value = '__nueva__';
+  optNueva.textContent = '+ Nueva categoría…';
+  select.appendChild(optNueva);
   select.addEventListener('change', () => {
     if (select.value === '__nueva__') {
       const nueva = prompt('Nombre de la nueva categoría:');

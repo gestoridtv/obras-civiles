@@ -3,18 +3,30 @@ window.Views = window.Views || {};
 window.Views.brief = {
   render(container, { proyectoId }) {
     Promise.all([DB.obtenerProyecto(proyectoId), DB.listarRequerimientos(proyectoId)]).then(([proyecto, requerimientos]) => {
+      if (!proyecto) {
+        container.innerHTML = '<p style="padding:16px;">Obra no encontrada.</p>';
+        return;
+      }
+
       const header = document.createElement('div');
       header.className = 'header';
-      header.innerHTML = `<h1>Brief: ${proyecto.nombre}</h1><p style="color:var(--color-texto-sutil);">Cliente: ${proyecto.cliente}</p>`;
+      header.innerHTML = `
+        <button class="btn btn--texto" id="btn-mis-obras">← Mis obras</button>
+        <h1>Brief: ${proyecto.nombre}</h1><p style="color:var(--color-texto-sutil);">Cliente: ${proyecto.cliente}</p>
+      `;
       container.appendChild(header);
+
+      document.getElementById('btn-mis-obras').addEventListener('click', () => {
+        Router.navegar('proyectos');
+      });
 
       const porCategoria = {};
       requerimientos.forEach((r) => {
-        const cat = r.categoria || 'Sin categoría';
+        const cat = (r.categoria && proyecto.categorias.includes(r.categoria)) ? r.categoria : 'Sin categoría';
         (porCategoria[cat] = porCategoria[cat] || []).push(r);
       });
 
-      proyecto.categorias.forEach((categoria) => {
+      proyecto.categorias.concat(['Sin categoría']).forEach((categoria) => {
         const items = porCategoria[categoria];
         if (!items || items.length === 0) return;
         const titulo = document.createElement('div');
@@ -58,6 +70,10 @@ window.Views.brief = {
 };
 
 function compartirOBajarPdf(proyecto, requerimientos) {
+  if (!window.jspdf) {
+    alert('No se pudo generar el PDF. Si estás sin conexión, probá de nuevo cuando tengas internet.');
+    return;
+  }
   const blob = PDF.generarBrief(proyecto, requerimientos);
   const nombreArchivo = PDF.nombreArchivo(proyecto);
   const archivo = new File([blob], nombreArchivo, { type: 'application/pdf' });
