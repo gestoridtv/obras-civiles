@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Test: pdf.js</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <a id="link" target="_blank">Abrir PDF generado</a>
+  <script src="../js/pdf.js"></script>
+  <script>
+    const proyecto = {
+      nombre: 'Casa Pérez',
+      cliente: 'Juan Pérez',
+      categorias: ['Estructura', 'Eléctrico', 'Acabados'],
+    };
+    const requerimientos = [
+      { texto: 'Pileta de 6x3 metros', categoria: 'Estructura' },
+      { texto: 'Dos baños en planta alta', categoria: 'Estructura' },
+      { texto: 'Tablero eléctrico trifásico', categoria: 'Eléctrico' },
+      { texto: 'Piso porcelanato en living', categoria: 'Acabados' },
+    ];
+    const blob = PDF.generarBrief(proyecto, requerimientos);
+    const url = URL.createObjectURL(blob);
+    const link = document.getElementById('link');
+    link.href = url;
+    link.textContent = PDF.nombreArchivo(proyecto);
+  </script>
+</body>
+</html>
