@@ -1,7 +1,8 @@
-const CACHE_NAME = 'obras-civiles-shell-v1';
+const CACHE_NAME = 'obras-civiles-shell-v2';
 const ARCHIVOS_SHELL = [
   './',
   './index.html',
+  './css/tokens.css',
   './css/styles.css',
   './manifest.json',
   './js/db.js',
