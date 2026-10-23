@@ -1,4 +1,4 @@
-const CACHE_NAME = 'obras-civiles-shell-v6';
+const CACHE_NAME = 'obras-civiles-shell-v7';
 const ARCHIVOS_SHELL = [
   './',
   './index.html',

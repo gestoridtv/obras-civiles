@@ -115,82 +115,7 @@ textarea.campo { min-height: 96px; resize: vertical; }
 .campo::placeholder { color: var(--color-texto-sutil); opacity: 1; }
 .campo:focus-visible { outline-offset: 0; border-color: var(--color-acento-fuerte); }
 
-/* ---------- Clases heredadas (retematizadas; se retiran al reescribir cada vista) ---------- */
-.header {
-  padding: 16px;
-  background: var(--color-superficie);
-  border-bottom: 1px solid var(--color-borde);
-}
-
-.card {
-  background: var(--color-superficie);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio);
-  box-shadow: var(--sombra);
-  padding: 14px;
-  margin: 10px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  overflow-wrap: anywhere;
-}
-
-.chip {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 600;
-}
-.chip--captura { background: #EDE8DF; color: #3F3A33; }
-.chip--brief_generado { background: #FFEDD5; color: #7C2D12; }
-.chip--aprobado { background: #DCFCE7; color: #14532D; }
-
-.btn-fab {
-  position: fixed;
-  bottom: calc(24px + env(safe-area-inset-bottom));
-  right: 24px;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--color-acento);
-  color: var(--color-sobre-acento);
-  border: none;
-  font-size: 28px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(26, 23, 20, 0.25);
-}
-.btn-fab:active { background: var(--color-acento-fuerte); }
-
-.checklist-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: var(--alto-tactil);
-  padding: 14px;
-  background: var(--color-superficie);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio);
-  margin: 0 16px 8px;
-  overflow-wrap: anywhere;
-}
-.checklist-item input[type="checkbox"] {
-  width: 26px;
-  height: 26px;
-  flex-shrink: 0;
-  accent-color: var(--color-exito);
-}
-.checklist-item--hecho {
-  opacity: 0.7;
-  text-decoration: line-through;
-}
-
-.progreso {
-  padding: 12px 16px;
-  font-weight: 600;
-  color: var(--color-texto-sutil);
-}
-
+/* ---------- Título de categoría (brief y checklist) ---------- */
 .categoria-titulo {
   padding: 16px 16px 8px;
   font-size: 14px;
@@ -932,6 +857,323 @@ html.con-hoja { overflow: hidden; }
 .dock--brief { gap: 10px; }
 .dock--brief .btn[aria-busy="true"] { cursor: progress; }
 
+/* ---------- Checklist (obra) ---------- */
+.checklist { padding: 16px 0 0; }
+
+/* Progreso; --progreso (0%–100%) lo fija la vista con setProperty. */
+.progreso-obra {
+  --progreso: 0%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 16px 8px;
+  padding: 16px;
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+.progreso-obra__cabecera {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.progreso-obra__titulo {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-texto-sutil);
+}
+.progreso-obra__porcentaje {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.progreso-obra__cifra { font-size: 16px; }
+.progreso-obra__cifra strong {
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.progreso-obra__barra {
+  height: 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-borde) 55%, var(--color-superficie));
+  overflow: hidden;
+}
+.progreso-obra__relleno {
+  display: block;
+  width: var(--progreso);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-acento);
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+.progreso-obra__nota {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-exito);
+  font-weight: 700;
+}
+.progreso-obra__nota:empty { display: none; }
+
+/* Todo hecho: verde, sin confeti. */
+.progreso-obra--completo {
+  border-color: var(--color-exito);
+  background: color-mix(in srgb, var(--color-exito) 6%, var(--color-superficie));
+}
+.progreso-obra--completo .progreso-obra__porcentaje { color: var(--color-exito); }
+.progreso-obra--completo .progreso-obra__relleno { background: var(--color-exito); }
+.progreso-obra--celebrar .progreso-obra__nota { animation: progreso-celebrar 0.45s ease-out; }
+
+@keyframes progreso-celebrar {
+  from { opacity: 0; transform: translateY(4px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+.checklist__grupo { margin-bottom: 8px; }
+.checklist__grupo .categoria-titulo { margin: 0; }
+.checklist__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0 16px;
+  list-style: none;
+}
+
+/* Fila completa tocable: el checkbox real está oculto visualmente (sigue
+   funcionando con teclado y lector de pantalla); la marca es propia. */
+.check {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 64px;
+  padding: 12px 16px 12px 12px;
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.check:active { background: var(--color-fondo); }
+.check:has(input:focus-visible) {
+  outline: 3px solid var(--color-acento-fuerte);
+  outline-offset: 2px;
+}
+
+.check__marca {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 2.5px solid var(--color-texto-sutil);
+  border-radius: 10px;
+  background: var(--color-superficie);
+  color: transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.check__texto {
+  flex: 1;
+  min-width: 0;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+/* Hecho: marca verde con tilde, texto atenuado y tachado (no solo color). */
+.check--hecho {
+  background: color-mix(in srgb, var(--color-fondo) 70%, var(--color-superficie));
+  box-shadow: none;
+}
+.check--hecho .check__marca {
+  border-color: var(--color-exito);
+  background: var(--color-exito);
+  color: var(--color-sobre-acento);
+}
+.check--hecho .check__texto {
+  color: var(--color-texto-sutil);
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- Mis obras ---------- */
+.encabezado--inicio {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding-top: calc(16px + env(safe-area-inset-top));
+}
+.encabezado__logo { display: flex; flex-shrink: 0; }
+.encabezado--inicio .encabezado__titulo:focus { outline: none; }
+
+.obras { padding: 16px 16px 0; }
+
+.obras__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.obra {
+  position: relative;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra);
+}
+
+/* Toda la tarjeta es el enlace; el botón de borrar va encima, aparte. */
+.obra__enlace {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: var(--alto-tactil);
+  padding: 16px;
+  border-radius: inherit;
+  color: var(--color-texto);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+.obra__enlace:hover, .obra__enlace:active { background: var(--color-fondo); }
+
+.obra__cliente, .obra__nombre { margin-right: 48px; }
+.obra__cliente {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.obra__nombre { color: var(--color-texto-sutil); }
+
+.obra__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-top: 10px;
+}
+.obra__estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border: 1px solid var(--color-borde);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-borde) 35%, var(--color-superficie));
+  font-size: 14px;
+  font-weight: 700;
+}
+.obra__estado--aprobado {
+  border-color: var(--color-exito);
+  background: color-mix(in srgb, var(--color-exito) 12%, var(--color-superficie));
+  color: var(--color-exito);
+}
+.obra__cantidad { color: var(--color-texto-sutil); }
+
+.obra__avance {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.obra__pasos {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+.obra__paso {
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-borde) 70%, var(--color-superficie));
+}
+.obra__paso--hecho { background: var(--color-exito); }
+.obra__avance-texto {
+  flex-shrink: 0;
+  color: var(--color-texto-sutil);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.obra__borrar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--alto-tactil);
+  height: var(--alto-tactil);
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-texto-sutil);
+  cursor: pointer;
+}
+.obra__borrar:hover, .obra__borrar:active {
+  background: color-mix(in srgb, var(--color-peligro) 10%, var(--color-superficie));
+  color: var(--color-peligro);
+}
+.obra__borrar[aria-busy="true"] { cursor: progress; }
+
+/* Estado vacío de inicio: logo grande en lugar del ícono. */
+.vacio--inicio { padding-top: 64px; }
+.vacio__logo {
+  display: flex;
+  margin-bottom: 8px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--color-acento) 30%, transparent);
+}
+.vacio--inicio .btn { margin-top: 8px; }
+
+/* Botón flotante "Nueva obra". La zona fija mide el botón más su margen y
+   publica ese alto en --alto-dock, así el toast se apila por encima. */
+.zona-fab {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: env(safe-area-inset-bottom);
+  z-index: 30;
+  display: flex;
+  justify-content: flex-end;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px 16px;
+  pointer-events: none;
+}
+.fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-acento);
+  color: var(--color-sobre-acento);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-acento) 40%, transparent);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+.fab:hover { background: var(--color-acento-fuerte); }
+.fab:active { background: var(--color-acento-fuerte); transform: scale(0.96); }
+.fab:focus-visible { outline-offset: 4px; }
+.fab[aria-busy="true"] { cursor: progress; }
+
 /* ---------- Movimiento reducido ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -942,4 +1184,5 @@ html.con-hoja { overflow: hidden; }
   }
   .toast, .capa, .hoja, .req--nueva .req__cuerpo { animation: none; }
   .mic--escuchando::before { animation: none; opacity: 1; transform: none; }
+  .progreso-obra--celebrar .progreso-obra__nota { animation: none; }
 }

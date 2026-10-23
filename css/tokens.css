@@ -10,9 +10,6 @@
   --color-peligro: #B91C1C;
   --color-borde: #D9D2C5;
 
-  /* Alias temporales para vistas aun no reescritas (se eliminan en la tarea 10) */
-  --color-primario: var(--color-acento);
-
   --radio: 12px;
   --alto-tactil: 48px;
   --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
