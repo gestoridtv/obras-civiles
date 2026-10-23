@@ -86,7 +86,30 @@
       paths + '</svg>';
   }
 
-  const Iconos = { svg, nombres: NOMBRES };
+  // Trazos del logo sobre una grilla de 512×512. Deben ser idénticos a los
+  // `d` de icons/logo.svg (lo verifica tests/node/logo.test.js).
+  const LOGO_TRAZOS = [
+    'M108 244 L256 116 L404 244',
+    'M152 214 L152 392 L360 392 L360 214',
+    'M208 296 L242 330 L302 262'
+  ];
+
+  // Logo de la app como SVG inline. Los colores literales son el respaldo
+  // sin CSS; en la app la clase .logo los reemplaza por los tokens
+  // (--color-acento, --color-sobre-acento). Lleva role="img" y aria-label
+  // porque se usa como marca con significado propio (encabezado, estado
+  // vacío); si va junto al nombre visible, el contenedor puede ocultarlo.
+  function logo(tamano) {
+    const lado = Number.isFinite(tamano) && tamano > 0 ? tamano : 40;
+    const paths = LOGO_TRAZOS.map((d) => '<path class="logo__trazo" d="' + d + '"/>').join('');
+    return '<svg class="logo" xmlns="http://www.w3.org/2000/svg" width="' + lado + '" height="' + lado +
+      '" viewBox="0 0 512 512" role="img" aria-label="Requerimientos de Obra" focusable="false">' +
+      '<rect class="logo__fondo" width="512" height="512" rx="112" fill="#C2410C"/>' +
+      '<g fill="none" stroke="#FFFFFF" stroke-width="40" stroke-linecap="round" stroke-linejoin="round">' +
+      paths + '</g></svg>';
+  }
+
+  const Iconos = { svg, logo, nombres: NOMBRES };
 
   raiz.Iconos = Iconos;
   if (typeof module !== 'undefined' && module.exports) module.exports = Iconos;

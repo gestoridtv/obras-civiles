@@ -1,4 +1,4 @@
-const CACHE_NAME = 'obras-civiles-shell-v3';
+const CACHE_NAME = 'obras-civiles-shell-v4';
 const ARCHIVOS_SHELL = [
   './',
   './index.html',
@@ -23,6 +23,9 @@ const ARCHIVOS_SHELL = [
   './js/app.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './icons/icon-maskable-512.png',
+  './icons/apple-touch-icon.png',
+  './icons/logo.svg',
 ];
 
 self.addEventListener('install', (event) => {

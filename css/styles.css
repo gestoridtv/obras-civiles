@@ -271,6 +271,11 @@ textarea.campo { min-height: 96px; resize: vertical; }
 /* ---------- Íconos ---------- */
 .icono { display: block; flex-shrink: 0; }
 
+/* Logo inline (Iconos.logo): los colores salen de los tokens. */
+.logo { display: block; flex-shrink: 0; }
+.logo__fondo { fill: var(--color-acento); }
+.logo__trazo { stroke: var(--color-sobre-acento); }
+
 /* ---------- Toast (aviso breve) ----------
    Se apila sobre la barra inferior y el dock de captura. Cada pantalla que
    los muestre fija su alto con estas variables (por defecto, 0). */
