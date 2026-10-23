@@ -12,8 +12,12 @@
   }
 
   function renderActual() {
-    // Al cambiar de pantalla el aviso pendiente se cierra (y su alCerrar se ejecuta).
-    if (window.Avisos) window.Avisos.cerrarToast();
+    // Al cambiar de pantalla el aviso pendiente se cierra (y su alCerrar se ejecuta)
+    // y la hoja abierta se cancela, para no actuar sobre la vista anterior.
+    if (window.Avisos) {
+      window.Avisos.cerrarToast();
+      window.Avisos.cerrarHoja();
+    }
     const { ruta, proyectoId } = parsearHash();
     const render = vistas[ruta] || vistas['proyectos'];
     const contenedor = document.getElementById('app');

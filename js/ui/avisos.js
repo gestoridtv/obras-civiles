@@ -404,7 +404,14 @@
     });
   }
 
-  const Avisos = { toast, cerrarToast, confirmar, hojaOpciones, formulario };
+  // Cierra la hoja abierta (si hay) resolviéndola con su valor de cancelación.
+  // El router la llama al cambiar de pantalla (p. ej. con el botón Atrás),
+  // para que la promesa no siga actuando sobre una vista que ya no está.
+  function cerrarHoja() {
+    if (capaActual) capaActual.cerrar(capaActual.valorCancelar);
+  }
+
+  const Avisos = { toast, cerrarToast, confirmar, hojaOpciones, formulario, cerrarHoja };
 
   raiz.Avisos = Avisos;
 })();
