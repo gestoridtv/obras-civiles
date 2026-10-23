@@ -900,6 +900,37 @@ html.con-hoja { overflow: hidden; }
   transform: none;
 }
 
+/* ---------- Brief ---------- */
+.brief { padding: 16px 0 0; }
+.brief__aprobado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 16px 12px;
+  padding: 6px 14px 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  color: var(--color-exito);
+  background: color-mix(in srgb, var(--color-exito) 12%, var(--color-superficie));
+  border: 1px solid var(--color-exito);
+}
+.brief__resumen { padding: 0 16px 4px; color: var(--color-texto-sutil); }
+.brief__resumen strong { font-size: 22px; font-weight: 800; color: var(--color-texto); }
+.brief__grupo { margin-bottom: 8px; }
+.brief__grupo .categoria-titulo { margin: 0; }
+.brief__lista { list-style: none; margin: 0; padding: 0; }
+.brief__req {
+  margin: 0 16px 10px;
+  padding: 14px;
+  font-size: 17px;
+  line-height: 1.45;
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+.dock--brief { gap: 10px; }
+
 /* ---------- Movimiento reducido ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
