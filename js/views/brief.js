@@ -120,7 +120,8 @@ window.Views = window.Views || {};
       ocupado = si;
       [btnAprobar, btnPdf, btnIrObra].forEach((b) => {
         if (!b) return;
-        b.disabled = si;
+        // aria-busy (no `disabled`): el botón conserva el foco mientras se
+        // espera; los clics se ignoran con `ocupado`.
         if (si) b.setAttribute('aria-busy', 'true');
         else b.removeAttribute('aria-busy');
       });
@@ -213,7 +214,10 @@ window.Views = window.Views || {};
     }
 
     if (btnIrObra) {
-      btnIrObra.addEventListener('click', () => Router.navegar('checklist', { proyectoId }));
+      btnIrObra.addEventListener('click', () => {
+        if (ocupado) return;
+        Router.navegar('checklist', { proyectoId });
+      });
     }
 
     // ------------------------------------------------ PDF
@@ -226,6 +230,9 @@ window.Views = window.Views || {};
         console.error('Brief: no se pudo generar el PDF', err);
         if (vista.isConnected) Avisos.toast({ mensaje: MENSAJE_PDF });
       } finally {
+        // La generación es síncrona: sin esta pausa un segundo toque rápido
+        // (ya encolado) volvería a generar y descargar el archivo.
+        await new Promise((resolver) => setTimeout(resolver, 700));
         if (vista.isConnected) bloquear(false);
       }
     });

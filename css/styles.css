@@ -930,6 +930,7 @@ html.con-hoja { overflow: hidden; }
   box-shadow: var(--sombra);
 }
 .dock--brief { gap: 10px; }
+.dock--brief .btn[aria-busy="true"] { cursor: progress; }
 
 /* ---------- Movimiento reducido ---------- */
 @media (prefers-reduced-motion: reduce) {
