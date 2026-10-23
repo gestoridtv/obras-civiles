@@ -18,6 +18,10 @@
       window.Avisos.cerrarToast();
       window.Avisos.cerrarHoja();
     }
+    // Los altos reservados por la barra de pasos y el dock (Shell.reservarAlto)
+    // pertenecen a la pantalla anterior: la nueva los vuelve a fijar si los usa.
+    document.documentElement.style.removeProperty('--alto-barra-inferior');
+    document.documentElement.style.removeProperty('--alto-dock');
     const { ruta, proyectoId } = parsearHash();
     const render = vistas[ruta] || vistas['proyectos'];
     const contenedor = document.getElementById('app');

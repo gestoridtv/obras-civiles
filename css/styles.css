@@ -21,7 +21,9 @@ h1, h2, h3, p { margin: 0; }
   margin: 0 auto;
   min-height: 100vh;
   min-height: 100dvh;
-  padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  /* Deja libre lo que tapan la barra de pasos y el dock (sus altos los
+     publica Shell.reservarAlto); 96px cubre las vistas con botón flotante. */
+  padding-bottom: calc(max(96px, var(--alto-barra-inferior) + var(--alto-dock) + 24px) + env(safe-area-inset-bottom));
   position: relative;
 }
 
@@ -159,76 +161,6 @@ textarea.campo { min-height: 96px; resize: vertical; }
   box-shadow: 0 4px 12px rgba(26, 23, 20, 0.25);
 }
 .btn-fab:active { background: var(--color-acento-fuerte); }
-
-.lista-items {
-  list-style: none;
-  margin: 0;
-  padding: 0 16px;
-}
-
-.item-captura {
-  background: var(--color-superficie);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio);
-  padding: 12px 14px;
-  margin-bottom: 8px;
-  position: relative;
-  overflow: hidden;
-  touch-action: pan-y;
-  overflow-wrap: anywhere;
-}
-.item-captura__fondo-borrar {
-  position: absolute;
-  inset: 0;
-  background: var(--color-peligro);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 16px;
-  color: var(--color-sobre-acento);
-  font-weight: 600;
-}
-.item-captura__contenido {
-  position: relative;
-  background: var(--color-superficie);
-  transition: transform 0.15s ease;
-}
-
-.barra-captura {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 480px;
-  display: flex;
-  gap: 8px;
-  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-  background: var(--color-superficie);
-  border-top: 1px solid var(--color-borde);
-}
-.barra-captura input[type="text"] {
-  flex: 1;
-  min-height: var(--alto-tactil);
-  padding: 12px;
-  border-radius: var(--radio);
-  border: 1.5px solid var(--color-borde);
-  background: var(--color-fondo);
-  color: var(--color-texto);
-  font-size: 16px;
-}
-.btn-mic {
-  width: var(--alto-tactil);
-  height: var(--alto-tactil);
-  border-radius: 50%;
-  border: none;
-  background: var(--color-acento);
-  color: var(--color-sobre-acento);
-  font-size: 20px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-.btn-mic--grabando { background: var(--color-peligro); }
 
 .checklist-item {
   display: flex;
@@ -472,6 +404,364 @@ html.con-hoja { overflow: hidden; }
   to { transform: none; opacity: 1; }
 }
 
+/* ---------- Encabezado de pantalla (Shell.encabezado) ---------- */
+.encabezado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: calc(4px + env(safe-area-inset-top)) 16px 16px;
+  background: var(--color-superficie);
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.encabezado__atras {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--alto-tactil);
+  margin-left: -8px;
+  padding: 0 12px 0 8px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-acento-fuerte);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.encabezado__atras:hover, .encabezado__atras:active { background: var(--color-fondo); }
+
+.encabezado__textos { width: 100%; min-width: 0; }
+.encabezado__titulo {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.encabezado__subtitulo {
+  margin-top: 2px;
+  color: var(--color-texto-sutil);
+}
+
+.mensaje-vista { padding: 24px 16px; color: var(--color-texto-sutil); }
+
+/* ---------- Barra de pasos (Shell.barraPasos) ----------
+   Fija abajo, dentro de la columna de 480px. Su alto sin el área segura se
+   publica en --alto-barra-inferior; el dock y el toast se apilan encima. */
+.barra-pasos {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--color-superficie);
+  box-shadow: 0 -1px 0 var(--color-borde);
+}
+
+.barra-pasos__lista {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin: 0;
+  padding: 4px 8px;
+  list-style: none;
+}
+
+.paso {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+  min-height: 60px;
+  padding: 4px 2px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-texto);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.paso:not([aria-disabled="true"]):not([aria-current]):hover,
+.paso:not([aria-disabled="true"]):not([aria-current]):active { background: var(--color-fondo); }
+
+.paso__icono {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 30px;
+  border-radius: 999px;
+}
+
+.paso[aria-current="step"] { color: var(--color-acento-fuerte); cursor: default; }
+.paso[aria-current="step"] .paso__icono {
+  background: color-mix(in srgb, var(--color-acento) 16%, var(--color-superficie));
+}
+.paso[aria-current="step"] .paso__etiqueta { font-weight: 800; }
+
+/* Deshabilitado: el texto conserva contraste AA; solo el ícono se atenúa. */
+.paso[aria-disabled="true"] { color: var(--color-texto-sutil); cursor: not-allowed; }
+.paso[aria-disabled="true"] .paso__icono > .icono { opacity: 0.5; }
+
+.paso__marca {
+  position: absolute;
+  top: -1px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-exito);
+  color: var(--color-sobre-acento);
+  box-shadow: 0 0 0 2px var(--color-superficie);
+}
+
+/* ---------- Captura ---------- */
+.captura { padding: 4px 16px 0; }
+
+.captura__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0 12px;
+}
+.captura__titulo { font-size: 18px; font-weight: 700; }
+.captura__titulo:focus { outline: none; }
+.captura__contador {
+  min-width: 28px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #EDE8DF;
+  color: var(--color-texto);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.lista-reqs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Tarjeta de requerimiento; --desplazamiento lo fija el swipe. */
+.req {
+  --desplazamiento: 0px;
+  position: relative;
+  border-radius: var(--radio);
+  overflow: hidden;
+}
+
+.req__fondo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-right: 20px;
+  background: var(--color-peligro);
+  color: var(--color-sobre-acento);
+  font-weight: 700;
+  opacity: 0;
+}
+.req--arrastrando .req__fondo, .req--saliendo .req__fondo { opacity: 1; }
+.req--listo .req__fondo { background: #991B1B; }
+
+.req__cuerpo {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  min-height: 64px;
+  padding: 8px 4px 8px 16px;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra);
+  transform: translateX(var(--desplazamiento));
+  transition: transform 0.2s ease;
+  touch-action: pan-y;
+}
+.req--arrastrando .req__cuerpo { transition: none; user-select: none; -webkit-user-select: none; }
+.req--saliendo .req__cuerpo { transition: transform 0.18s ease-in; }
+.req--nueva .req__cuerpo { animation: req-nueva 1.2s ease-out; }
+
+.req__texto {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 0;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.req__borrar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--alto-tactil);
+  height: var(--alto-tactil);
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-texto-sutil);
+  cursor: pointer;
+}
+.req__borrar:hover, .req__borrar:active {
+  background: color-mix(in srgb, var(--color-peligro) 10%, var(--color-superficie));
+  color: var(--color-peligro);
+}
+
+@keyframes req-nueva {
+  from {
+    border-color: var(--color-acento);
+    background: color-mix(in srgb, var(--color-acento) 12%, var(--color-superficie));
+  }
+  to {
+    border-color: var(--color-borde);
+    background: var(--color-superficie);
+  }
+}
+
+/* Estado vacío */
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 56px 24px 24px;
+  text-align: center;
+}
+.vacio__icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-acento) 12%, var(--color-superficie));
+  color: var(--color-acento-fuerte);
+}
+.vacio__titulo { font-size: 20px; font-weight: 700; }
+.vacio__titulo:focus { outline: none; }
+.vacio__texto { max-width: 32ch; color: var(--color-texto-sutil); }
+
+/* ---------- Dock de captura ----------
+   Fijo justo encima de la barra de pasos; su alto se publica en --alto-dock
+   para que el toast quede por encima y nunca tape el micrófono. */
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--alto-barra-inferior) + env(safe-area-inset-bottom));
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  background: var(--color-superficie);
+  box-shadow: 0 -1px 0 var(--color-borde), 0 -8px 24px rgba(26, 23, 20, 0.06);
+}
+.dock:has(.dock__voz) { padding-bottom: 8px; }
+
+.dock__form { display: flex; align-items: center; gap: 8px; }
+.dock__campo { flex: 1; min-width: 0; background: var(--color-fondo); }
+
+.dock__enviar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--alto-tactil);
+  height: var(--alto-tactil);
+  border: 2px solid var(--color-acento-fuerte);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  color: var(--color-acento-fuerte);
+  cursor: pointer;
+}
+.dock__enviar:hover, .dock__enviar:active { background: var(--color-fondo); }
+
+.dock__voz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.mic {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-acento);
+  color: var(--color-sobre-acento);
+  box-shadow: 0 4px 14px rgba(194, 65, 12, 0.35);
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+.mic:hover { background: var(--color-acento-fuerte); }
+.mic:active { transform: scale(0.96); }
+.mic:focus-visible { outline-offset: 4px; }
+
+/* Anillo que late mientras escucha (estático con movimiento reducido). */
+.mic::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 3px solid var(--color-acento);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+.mic--escuchando { background: var(--color-acento-fuerte); }
+.mic--escuchando::before { opacity: 0.7; animation: mic-pulso 1.4s ease-out infinite; }
+/* Mientras escucha, el ícono pasa a un cuadrado de "detener". */
+.mic--escuchando .icono { display: none; }
+.mic--escuchando::after {
+  content: "";
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: currentColor;
+}
+
+@keyframes mic-pulso {
+  from { transform: scale(0.94); opacity: 0.8; }
+  to { transform: scale(1.3); opacity: 0; }
+}
+
+.dock__estado {
+  min-height: 24px;
+  color: var(--color-texto-sutil);
+  font-weight: 600;
+}
+.dock--escuchando .dock__estado { color: var(--color-acento-fuerte); }
+
 /* ---------- Movimiento reducido ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -480,5 +770,6 @@ html.con-hoja { overflow: hidden; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .toast, .capa, .hoja { animation: none; }
+  .toast, .capa, .hoja, .req--nueva .req__cuerpo { animation: none; }
+  .mic--escuchando::before { animation: none; opacity: 1; transform: none; }
 }

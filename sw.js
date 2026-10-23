@@ -1,4 +1,4 @@
-const CACHE_NAME = 'obras-civiles-shell-v4';
+const CACHE_NAME = 'obras-civiles-shell-v5';
 const ARCHIVOS_SHELL = [
   './',
   './index.html',
@@ -14,6 +14,7 @@ const ARCHIVOS_SHELL = [
   './js/ui/borrado-diferido.js',
   './js/ui/iconos.js',
   './js/ui/avisos.js',
+  './js/ui/shell.js',
   './js/router.js',
   './js/views/proyectos.js',
   './js/views/captura.js',
