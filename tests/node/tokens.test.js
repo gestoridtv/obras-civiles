@@ -34,6 +34,11 @@ const casos = [
   ['sobre-acento', 'exito', 4.5],
   ['sobre-acento', 'peligro', 4.5],
   ['acento', 'fondo', 3],
+  ['acento-fuerte', 'superficie', 4.5],
+  ['acento-fuerte', 'fondo', 4.5],
+  ['sobre-acento', 'acento-fuerte', 4.5],
+  ['sobre-acento', 'peligro-fuerte', 4.5],
+  ['texto', 'relleno', 7],
 ];
 
 for (const [a, b, minimo] of casos) {
@@ -46,6 +51,15 @@ for (const [a, b, minimo] of casos) {
   });
 }
 
-test('styles.css define overflow-wrap', () => {
-  assert.match(leer('css/styles.css'), /overflow-wrap/);
+// Devuelve el cuerpo de la regla cuyo selector es exactamente `selector`.
+function regla(css, selector) {
+  const escapado = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const m = css.match(new RegExp('(?:^|})\\s*' + escapado + '\\s*\\{([^}]*)\\}', 'm'));
+  assert.ok(m, 'falta la regla ' + selector);
+  return m[1];
+}
+
+test('.texto-seguro corta palabras largas con overflow-wrap', () => {
+  const cuerpo = regla(leer('css/styles.css'), '.texto-seguro');
+  assert.match(cuerpo, /(?:^|;|\s)overflow-wrap:\s*(anywhere|break-word)\s*(;|$)/);
 });

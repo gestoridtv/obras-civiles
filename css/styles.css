@@ -85,7 +85,7 @@ h1, h2, h3, p { margin: 0; }
 .btn--secundario:hover, .btn--secundario:active { background: var(--color-fondo); }
 
 .btn--peligro { background: var(--color-peligro); color: var(--color-sobre-acento); }
-.btn--peligro:hover, .btn--peligro:active { background: #991B1B; }
+.btn--peligro:hover, .btn--peligro:active { background: var(--color-peligro-fuerte); }
 
 .btn--texto { background: transparent; color: var(--color-texto-sutil); }
 .btn--texto:hover, .btn--texto:active { background: rgba(26, 23, 20, 0.06); }
@@ -470,7 +470,7 @@ html.con-hoja { overflow: hidden; }
   min-width: 28px;
   padding: 1px 8px;
   border-radius: 999px;
-  background: #EDE8DF;
+  background: var(--color-relleno);
   color: var(--color-texto);
   font-size: 14px;
   font-weight: 700;
@@ -508,7 +508,7 @@ html.con-hoja { overflow: hidden; }
   opacity: 0;
 }
 .req--arrastrando .req__fondo, .req--saliendo .req__fondo { opacity: 1; }
-.req--listo .req__fondo { background: #991B1B; }
+.req--listo .req__fondo { background: var(--color-peligro-fuerte); }
 
 .req__cuerpo {
   position: relative;
