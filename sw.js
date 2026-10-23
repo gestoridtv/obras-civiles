@@ -1,4 +1,4 @@
-const CACHE_NAME = 'obras-civiles-shell-v2';
+const CACHE_NAME = 'obras-civiles-shell-v3';
 const ARCHIVOS_SHELL = [
   './',
   './index.html',
@@ -9,6 +9,11 @@ const ARCHIVOS_SHELL = [
   './js/speech.js',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
   './js/pdf.js',
+  './js/ui/texto.js',
+  './js/ui/pasos.js',
+  './js/ui/borrado-diferido.js',
+  './js/ui/iconos.js',
+  './js/ui/avisos.js',
   './js/router.js',
   './js/views/proyectos.js',
   './js/views/captura.js',

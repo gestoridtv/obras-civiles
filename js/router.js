@@ -12,6 +12,8 @@
   }
 
   function renderActual() {
+    // Al cambiar de pantalla el aviso pendiente se cierra (y su alCerrar se ejecuta).
+    if (window.Avisos) window.Avisos.cerrarToast();
     const { ruta, proyectoId } = parsearHash();
     const render = vistas[ruta] || vistas['proyectos'];
     const contenedor = document.getElementById('app');
