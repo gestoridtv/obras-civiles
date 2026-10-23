@@ -836,7 +836,7 @@ html.con-hoja { overflow: hidden; }
   border-radius: 999px;
   font-weight: 700;
   color: var(--color-exito);
-  background: color-mix(in srgb, var(--color-exito) 12%, var(--color-superficie));
+  background: color-mix(in srgb, var(--color-exito) 5%, var(--color-superficie));
   border: 1px solid var(--color-exito);
 }
 .brief__resumen { padding: 0 16px 4px; color: var(--color-texto-sutil); }
@@ -1077,7 +1077,7 @@ html.con-hoja { overflow: hidden; }
 }
 .obra__estado--aprobado {
   border-color: var(--color-exito);
-  background: color-mix(in srgb, var(--color-exito) 12%, var(--color-superficie));
+  background: color-mix(in srgb, var(--color-exito) 5%, var(--color-superficie));
   color: var(--color-exito);
 }
 .obra__cantidad { color: var(--color-texto-sutil); }
