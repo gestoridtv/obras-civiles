@@ -762,6 +762,144 @@ html.con-hoja { overflow: hidden; }
 }
 .dock--escuchando .dock__estado { color: var(--color-acento-fuerte); }
 
+/* ---------- Revisión ---------- */
+.revision { padding: 16px 16px 0; }
+
+/* Resumen "N de M con categoría"; --avance (0%–100%) lo fija la vista. */
+.resumen {
+  --avance: 0%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.resumen__titulo { font-size: 18px; font-weight: 700; }
+.resumen__titulo:focus { outline: none; }
+.resumen__cifra { font-size: 16px; }
+.resumen__cifra strong { font-size: 22px; font-weight: 800; }
+.resumen__barra {
+  height: 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-borde) 55%, var(--color-superficie));
+  overflow: hidden;
+}
+.resumen__relleno {
+  display: block;
+  width: var(--avance);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-acento);
+  transition: width 0.3s ease;
+}
+.resumen--completo .resumen__relleno { background: var(--color-exito); }
+.resumen__nota {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-texto-sutil);
+  font-weight: 600;
+}
+.resumen--completo .resumen__nota { color: var(--color-exito); }
+
+/* Tarjeta de requerimiento en revisión */
+.rev {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 4px 8px 16px;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra);
+}
+.rev__fila, .rev__pie {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+.rev__pie { align-items: center; justify-content: space-between; }
+
+.rev__texto {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 0;
+  font-size: 17px;
+  line-height: 1.45;
+}
+.rev__campo { flex: 1; min-width: 0; font-size: 17px; }
+.rev--editando .rev__fila { padding-right: 12px; }
+
+.rev__icono {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--alto-tactil);
+  height: var(--alto-tactil);
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-acento-fuerte);
+  cursor: pointer;
+}
+.rev__icono:hover, .rev__icono:active { background: var(--color-fondo); }
+.rev__borrar { color: var(--color-texto-sutil); }
+.rev__borrar:hover, .rev__borrar:active {
+  background: color-mix(in srgb, var(--color-peligro) 10%, var(--color-superficie));
+  color: var(--color-peligro);
+}
+
+/* Chip de categoría: tocable completo (48px). Sin categoría = atención. */
+.rev__categoria {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--alto-tactil);
+  padding: 8px 16px 8px 12px;
+  border: 1.5px solid var(--color-borde);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-borde) 35%, var(--color-superficie));
+  color: var(--color-texto);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+}
+.rev__categoria:hover, .rev__categoria:active { border-color: var(--color-texto-sutil); }
+.rev__categoria-texto { min-width: 0; }
+.rev__categoria--sin {
+  border: 2px dashed var(--color-acento-fuerte);
+  background: color-mix(in srgb, var(--color-acento) 8%, var(--color-superficie));
+  color: var(--color-acento-fuerte);
+}
+.rev__categoria--sin:hover, .rev__categoria--sin:active {
+  border-color: var(--color-acento-fuerte);
+  background: color-mix(in srgb, var(--color-acento) 14%, var(--color-superficie));
+}
+
+/* Barra de acción fija (reusa .dock) con "Generar brief" */
+.dock--revision { gap: 8px; }
+.dock__nota {
+  color: var(--color-texto-sutil);
+  font-size: 16px;
+  line-height: 1.35;
+  text-align: center;
+}
+.dock__principal { width: 100%; min-height: 52px; font-size: 17px; }
+/* Deshabilitado: gris legible en vez de naranja desvaído. */
+.dock__principal[aria-disabled="true"],
+.dock__principal[aria-disabled="true"]:hover,
+.dock__principal[aria-disabled="true"]:active {
+  opacity: 1;
+  background: color-mix(in srgb, var(--color-borde) 55%, var(--color-superficie));
+  color: var(--color-texto-sutil);
+  transform: none;
+}
+
 /* ---------- Movimiento reducido ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
